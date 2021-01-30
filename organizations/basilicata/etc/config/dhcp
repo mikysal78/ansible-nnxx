@@ -26,5 +26,5 @@ config dhcp 'lan'
 	option start		100
 	option limit		200
 	option leasetime	3h
-        list dhcp_option '6,176.9.204.50,176.9.187.218,8.8.8.8,8.8.4.4'
+        list dhcp_option '6,86.107.110.93,8.8.8.8,8.8.4.4'
 

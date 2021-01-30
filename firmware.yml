@@ -2,11 +2,11 @@
   roles:
     - openwisp.openwisp2-imagegenerator
   vars:
-    basedir: /home/jenkins/workspace/nnxx-firmware
+    basedir: /home/jenkins/workspace/Firmware
     openwisp2fw_ssl_lib: mbedtls
     openwisp2fw_source_dir: "{{ basedir }}/source"
     openwisp2fw_generator_dir: "{{ basedir }}/generator"
-    openwisp2fw_bin_dir: /var/www/nnxx-firmware/
+    openwisp2fw_bin_dir: /mnt/nfs-firmware/firmware/
     openwisp2fw_source_repo: https://github.com/openwrt/openwrt.git
     openwisp2fw_source_version: openwrt-19.07
     openwisp2fw_source_targets:
@@ -17,8 +17,12 @@
           profile: Default
         - system: mvebu
           subtarget: cortexa9
-          profile: Default
+          profile: DEVICE_linksys_wrt3200acm
     openwisp2fw_source_feeds:
+        - method: src-git
+          name: chilli
+          location: https://github.com/openwisp/coova-chilli-openwrt.git
+          branch: master
         - method: src-git
           name: openwisp
           location: https://github.com/openwisp/openwisp-config.git
@@ -59,11 +63,19 @@
         - iperf3
         - ipip
         - kmod-ipip
-        # Captive Portals
-        - opennds
+        - lua-cjson
+        # chilli
+        - coova-chilli
+        - lua-cjson
+        - rpcd-mod-iwinfo
+        # nodogsplash
+        - nodogsplash
         - sqm-scripts
         # WRT3200ACM:
-        - kmod-mwifiex-sdio
+        - kmod-ath
+        - kmod-ath9k
+        - kmod-ath9k-common
+        - ATH_DFS
         - kmod-usb-core
         - kmod-usb-ehci
         - kmod-usb-ohci
@@ -71,8 +83,6 @@
         - kmod-usb-uhci
         - kmod-usb2
         - kmod-usb3
-        - mwifiex-sdio-firmware
-        - kmod-mwlwifi
     # other OpenWRT/LEDE configurations
     openwisp2fw_source_other_configs:
         # busybox
@@ -85,13 +95,25 @@
         # olsrd2
         - CONFIG_OONF_NHDP_AUTOLL4=y
         - CONFIG_OONF_OLSRV2_LAN_IMPORT=y
+        # chilli
+        - CONFIG_COOVACHILLI_REDIR=y
+        - CONFIG_COOVACHILLI_OPENSSL=y
         # workaround to avoid conflicts between wpad and wpad-mini
         - "# CONFIG_PACKAGE_wpad-mini is not set"
+        # version
+        - CONFIG_VERSIONOPT=y
+        - CONFIG_VERSION_DIST="OpenWrt"
+        - CONFIG_VERSION_REPO="http://downloads.nnxx.ninux.org/firmware"
+        - CONFIG_VERSION_SUPPORT_URL="https://t.me/ninux_experimental"
+        - CONFIG_VERSION_PRODUCT="NNXX"
+        - CONFIG_VERSION_FILENAMES=y
+        - CONFIG_VERSION_CODE_FILENAMES=y
     # packages passed to "PACKAGES" flag of image builder (in the image building step)
     openwisp2fw_default_packages:
         - -ppp
         - -ppp-mod-pppoe
         - -wpad-mini
+        - -wpad-basic
         - wpad
         - uhttpd
         - uhttpd-mod-ubus
@@ -114,8 +136,12 @@
         - luci-ssl
           #- bind-client
     # packages used in the chilli flavour
-    nnxx_opennds:
-        - opennds
+    nnxx_chilli:
+        - coova-chilli
+        - lua-cjson
+        - rpcd-mod-iwinfo
+    nnxx_nodogsplash:
+        - nodogsplash
         - sqm-scripts
     olsrd2_packages:
         - oonf-olsrd2
@@ -132,27 +158,33 @@
         - kmod-mwlwifi
     # packages used in flavours
     base_packages: "{{ openwisp2fw_default_packages + nnxx_full_packages + olsrd2_packages }}"
-    opennds_packages: "{{ openwisp2fw_default_packages + nnxx_full_packages + olsrd2_packages + nnxx_opennds }}"
+    chilli_packages: "{{ openwisp2fw_default_packages + nnxx_full_packages + olsrd2_packages + nnxx_chilli }}"
+    nodogsplash_packages: "{{ openwisp2fw_default_packages + nnxx_full_packages + olsrd2_packages + nnxx_nodogsplash }}"
     # definition of available flavours
     openwisp2fw_image_flavours:
         base:
           ar71xx:
             packages: "{{ base_packages }}"
-        opennds:
-          ar71xx:
-            packages: "{{ opennds_packages }}"
           ipq806x:
-            packages: "{{ opennds_packages }}"
+            packages: "{{ base_packages }}"
+        chilli:
+          ar71xx:
+            packages: "{{ chilli_packages }}"
+        nodogsplash:
+          ar71xx:
+            packages: "{{ nodogsplash_packages }}"
+          ipq806x:
+            packages: "{{ nodogsplash_packages }}"
           mvebu:
-            packages: "{{ opennds + WRT3200ACM }}"
-
+            packages: "{{ nodogsplash_packages + WRT3200ACM }}"
      # definition of organizations
     default_openwisp2_url: https://openwisp.nnxx.ninux.org
     openwisp2fw_organizations:
          - name: basilicata
            flavours:
              - base
-             - opennds
+             - nodogsplash
+             - chilli
            openwisp:
              url: "{{ default_openwisp2_url }}"
              shared_secret: Secretn1nuxB4s
