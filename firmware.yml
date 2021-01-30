@@ -167,9 +167,15 @@
             packages: "{{ base_packages }}"
           ipq806x:
             packages: "{{ base_packages }}"
+          mvebu:
+            packages: "{{ base_packages + WRT3200ACM }}"
         chilli:
           ar71xx:
             packages: "{{ chilli_packages }}"
+          ipq806x:
+            packages: "{{ chilli_packages }}"
+          mvebu:
+            packages: "{{ chilli_packages + WRT3200ACM }}"
         nodogsplash:
           ar71xx:
             packages: "{{ nodogsplash_packages }}"
