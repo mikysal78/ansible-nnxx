@@ -101,6 +101,7 @@
         # workaround to avoid conflicts between wpad and wpad-mini
         - "# CONFIG_PACKAGE_wpad-mini is not set"
         # version
+        - CONFIG_IMAGEOPT=y
         - CONFIG_VERSIONOPT=y
         - CONFIG_VERSION_DIST="OpenWrt"
         - CONFIG_VERSION_REPO="http://downloads.nnxx.ninux.org/firmware"
