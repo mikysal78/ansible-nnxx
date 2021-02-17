@@ -126,7 +126,7 @@
         - luci-ssl
     # packages used in the minimal flavour
     nnxx_minimal_packages:
-        - ip
+        - ip-full
         - ipip
         - kmod-ipip
         - px5g
