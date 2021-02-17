@@ -124,6 +124,13 @@
         - libustream-{{ openwisp2fw_ssl_lib }}
         - px5g
         - luci-ssl
+    # packages used in the minimal flavour
+    nnxx_minimal_packages:
+        - ip
+        - ipip
+        - kmod-ipip
+        - px5g
+        - luci-ssl
     # packages used in the nossl flavour
     nnxx_nossl_packages:
         - luci
@@ -150,7 +157,7 @@
         - kmod-mwlwifi
     # packages used in flavours
     base_packages: "{{ openwisp2fw_default_packages + nnxx_full_packages + olsrd2_packages }}"
-    chilli_packages: "{{ openwisp2fw_default_packages + nnxx_nossl_packages + olsrd2_packages + nnxx_chilli }}"
+    chilli_packages: "{{ openwisp2fw_default_packages + nnxx_minimal_packages + olsrd2_packages + nnxx_chilli }}"
     opennds_packages: "{{ openwisp2fw_default_packages + nnxx_full_packages + olsrd2_packages + nnxx_opennds }}"
     # definition of available flavours
     openwisp2fw_image_flavours:
