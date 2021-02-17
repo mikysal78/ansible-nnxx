@@ -117,16 +117,13 @@
         - ip-full
         - wget
         - partx-utils
-        - iputils-ping
-        - ip-full
         - iwinfo
-        - iperf3
+        #- iperf3
         - ipip
         - kmod-ipip
         - libustream-{{ openwisp2fw_ssl_lib }}
         - px5g
         - luci-ssl
-          #- bind-client
     # packages used in the chilli flavour
     nnxx_chilli:
         - coova-chilli
